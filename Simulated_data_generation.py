@@ -62,7 +62,6 @@ os.makedirs(VISUALS_FOLDER, exist_ok=True)
 
 # --- Parameters ---
 GAUSSIAN_STD = 0.05
-POISSON_LAMBDA = 2
 RANDOM_SCALE_RANGE = (0.95, 1.05)
 
 # --- Helper Functions ---
@@ -103,16 +102,13 @@ def apply_statistical_noise(df):
     noisy_df = df.copy()
     timepoints = df.columns.copy()
     for row in noisy_df.index[:-1]:  # avoid LoR row
-        method = random.choice(['gaussian', 'poisson', 'scale'])
+        method = random.choice(['gaussian', 'scale'])
         for col in timepoints:
             val = df.at[row, col]
             if pd.isna(val):
                 continue
             if method == 'gaussian':
                 noise = np.random.normal(loc=0, scale=GAUSSIAN_STD)
-                noisy_val = val + noise
-            elif method == 'poisson':
-                noise = np.random.poisson(lam=POISSON_LAMBDA) - POISSON_LAMBDA
                 noisy_val = val + noise
             elif method == 'scale':
                 scale = np.random.uniform(*RANDOM_SCALE_RANGE)
@@ -281,4 +277,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
